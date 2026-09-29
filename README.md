@@ -1,6 +1,6 @@
 # eFood — atividade EBAC
 
-Projeto reconstruído do zero para a atividade do curso de Front-End da EBAC.
+Projeto reconstruído do zero para as atividades do curso de Front-End da EBAC.
 
 ## Tecnologias
 
@@ -9,15 +9,23 @@ Projeto reconstruído do zero para a atividade do curso de Front-End da EBAC.
 - Styled Components
 - React Router
 - Vite
+- Fetch API / AJAX
 
-## Objetivo desta etapa
+## Funcionalidades implementadas
 
-- Reproduzir a identidade visual do layout eFood disponibilizado pela EBAC;
-- Criar a página inicial com listagem de restaurantes;
-- Criar navegação entre a listagem e a página de um restaurante;
-- Utilizar Styled Components para a estilização;
-- Utilizar React Router para as rotas;
-- Preparar o projeto para publicação na Vercel.
+- layout inspirado no projeto eFood fornecido pela EBAC;
+- listagem de restaurantes;
+- navegação para a página de cada restaurante;
+- consumo assíncrono da API oficial da atividade;
+- cardápio preenchido com os dados reais da API;
+- modal de detalhes do produto ao clicar em **Comprar**;
+- modal com foto, nome, descrição, porção e preço do item;
+- fechamento da modal pelo botão, clique fora ou tecla Esc;
+- configuração para publicação na Vercel.
+
+## API
+
+`https://api-ebac.vercel.app/api/efood/restaurantes`
 
 ## Como executar
 
@@ -32,4 +40,4 @@ npm run dev
 npm run build
 ```
 
-> O carrinho com Redux não faz parte desta etapa. Ele será implementado no módulo posterior.
+> O gerenciamento do carrinho com Redux pertence ao módulo seguinte e não foi antecipado nesta etapa.
