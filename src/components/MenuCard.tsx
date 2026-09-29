@@ -37,17 +37,25 @@ const Button = styled.button`
   background: ${colors.soft};
   color: ${colors.coral};
   font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.98);
+  }
 `
 
 type Props = {
   item: MenuItem
+  onBuy: (item: MenuItem) => void
 }
 
-export const MenuCard = ({ item }: Props) => (
+export const MenuCard = ({ item, onBuy }: Props) => (
   <Card>
-    <Image src={item.image} alt={item.name} />
-    <Title>{item.name}</Title>
-    <Text>{item.description}</Text>
-    <Button type="button">Adicionar ao carrinho</Button>
+    <Image src={item.foto} alt={item.nome} />
+    <Title>{item.nome}</Title>
+    <Text>{item.descricao}</Text>
+    <Button type="button" onClick={() => onBuy(item)}>
+      Comprar
+    </Button>
   </Card>
 )
