@@ -1,10 +1,16 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Container } from '../components/Container'
 import { Footer } from '../components/Footer'
 import { MenuCard } from '../components/MenuCard'
+import { ProductModal } from '../components/ProductModal'
 import { RestaurantHeader } from '../components/RestaurantHeader'
-import { restaurants } from '../data/restaurants'
+import {
+  getRestaurants,
+  type MenuItem,
+  type Restaurant as RestaurantType
+} from '../data/restaurants'
 import { colors } from '../styles/GlobalStyle'
 
 const Hero = styled.section<{ $image: string }>`
@@ -12,7 +18,8 @@ const Hero = styled.section<{ $image: string }>`
   min-height: 280px;
   display: flex;
   align-items: flex-end;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.46)), url(${({ $image }) => $image});
+  background-image: linear-gradient(rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.46)),
+    url(${({ $image }) => $image});
   background-position: center;
   background-size: cover;
   color: white;
@@ -55,42 +62,92 @@ const Grid = styled(Container)`
   }
 `
 
-const Note = styled.p`
-  width: min(1024px, calc(100% - 32px));
-  margin: 32px auto 0;
+const Status = styled(Container)`
+  min-height: 320px;
+  display: grid;
+  place-items: center;
   color: ${colors.coral};
-  font-size: 13px;
-  opacity: 0.8;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+`
+
+const BackLink = styled(Link)`
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 8px;
+  background: ${colors.coral};
+  color: ${colors.white};
 `
 
 export const Restaurant = () => {
   const { id } = useParams()
-  const restaurant = restaurants.find((item) => item.id === Number(id))
+  const [restaurant, setRestaurant] = useState<RestaurantType | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<MenuItem | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  if (!restaurant) {
-    return <Navigate to="/" replace />
+  useEffect(() => {
+    getRestaurants()
+      .then((restaurants) => {
+        const foundRestaurant = restaurants.find((item) => item.id === Number(id))
+
+        if (!foundRestaurant) {
+          setError('Restaurante não encontrado.')
+          return
+        }
+
+        setRestaurant(foundRestaurant)
+      })
+      .catch(() => setError('Não foi possível carregar o cardápio. Tente novamente mais tarde.'))
+      .finally(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
+    return (
+      <>
+        <RestaurantHeader />
+        <Status>Carregando cardápio...</Status>
+        <Footer />
+      </>
+    )
+  }
+
+  if (error || !restaurant) {
+    return (
+      <>
+        <RestaurantHeader />
+        <Status>
+          <div>
+            <p>{error || 'Restaurante não encontrado.'}</p>
+            <BackLink to="/">Voltar aos restaurantes</BackLink>
+          </div>
+        </Status>
+        <Footer />
+      </>
+    )
   }
 
   return (
     <>
       <RestaurantHeader />
-      <Hero $image={restaurant.image}>
+      <Hero $image={restaurant.capa}>
         <HeroContent>
-          <Category>{restaurant.type}</Category>
-          <Title>{restaurant.title}</Title>
+          <Category>{restaurant.tipo}</Category>
+          <Title>{restaurant.titulo}</Title>
         </HeroContent>
       </Hero>
       <Main>
         <Grid>
-          {restaurant.menu.map((item) => (
-            <MenuCard key={item.id} item={item} />
+          {restaurant.cardapio.map((item) => (
+            <MenuCard key={item.id} item={item} onBuy={setSelectedProduct} />
           ))}
         </Grid>
-        <Note>
-          Nesta etapa do curso, o botão de adicionar ao carrinho é apenas visual. O gerenciamento de estado com Redux será implementado no módulo seguinte.
-        </Note>
       </Main>
       <Footer />
+      {selectedProduct && (
+        <ProductModal item={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      )}
     </>
   )
 }
