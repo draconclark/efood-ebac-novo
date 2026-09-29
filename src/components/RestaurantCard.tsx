@@ -100,20 +100,20 @@ type Props = {
 
 export const RestaurantCard = ({ restaurant }: Props) => (
   <Card>
-    <Cover src={restaurant.image} alt={`Fachada e pratos do ${restaurant.title}`} />
+    <Cover src={restaurant.capa} alt={`Capa do restaurante ${restaurant.titulo}`} />
     <Tags>
-      {restaurant.featured && <Tag>Destaque da semana</Tag>}
-      <Tag>{restaurant.type}</Tag>
+      {restaurant.destacado && <Tag>Destaque da semana</Tag>}
+      <Tag>{restaurant.tipo}</Tag>
     </Tags>
     <Body>
       <Headline>
-        <Name>{restaurant.title}</Name>
-        <Rating aria-label={`Nota ${restaurant.rating}`}>
-          <span>{restaurant.rating.toFixed(1)}</span>
+        <Name>{restaurant.titulo}</Name>
+        <Rating aria-label={`Nota ${restaurant.avaliacao}`}>
+          <span>{restaurant.avaliacao.toFixed(1)}</span>
           <span aria-hidden="true">★</span>
         </Rating>
       </Headline>
-      <Description>{restaurant.description}</Description>
+      <Description>{restaurant.descricao}</Description>
       <Button to={`/restaurante/${restaurant.id}`}>Saiba Mais</Button>
     </Body>
   </Card>
